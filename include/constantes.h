@@ -22,7 +22,7 @@
 #define IADCOFFSET    541.8 //541.61 // ADC medido en vacio
 #define ADCRAW_1A     591.8 // ADC medido con una corriente de 1A
                          
-#define MU             0.01 // Tasa de aprendizaje, Filtro Adaptativo con 0<x<1
+#define MU            0.001 // Tasa de aprendizaje, Filtro Adaptativo con 0<x<1
 
 // MOSFET
 #define ADC_VGS_THRESHOLE  2650 // Tension minima de conduccion para este IRFZ44

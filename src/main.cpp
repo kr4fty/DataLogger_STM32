@@ -48,7 +48,8 @@ void setup() {
   encoder.setEncoderValue(dutyCycle);
   lcd_printNewSetpoint(dutyCycle);
 
-
+  pwm_setDuty1(0);
+  pwm_setDuty2(0);
 }
 
 bool isPowerOn = false; // TRUE: en funcionamiento, False: no ejecutandose
@@ -73,7 +74,7 @@ void loop() {
     tone(BUZZER_PIN, 600, 10);
     isTheSetpointUpdated = true;    
 
-    if(isPowerOn){ // Solo actualizo y esta en ejecucion la carga electronica
+    if(isPowerOn){ // Solo actualizo si esta en ejecucion la carga electronica
       switch(selection){
         case 1:
               pwm_setDuty1(dutyCycle); pwm_setDuty2(0); break;
@@ -160,9 +161,9 @@ void loop() {
       lcd_printVin();
       wasVUpdated = false;
     }*/
-    if(wasIUpdated){
+    if(wasIUpdated && isPowerOn){
       // Print Iin
-     lcd_printMosfet(selection, iBattRaw);
+      lcd_printMosfet(selection, vBattRaw, iBattRaw);
       wasIUpdated = false;
     }
 
@@ -181,7 +182,6 @@ void loop() {
     // Para graficar y obtener datos utilizando serial_port_plotter
     //sprintf(buff, "$%d %ld %d;", (int)dutyCycle, Time, (int)iBattRaw);
     Serial.printf("$%d %ld %d;", dutyCycle, (unsigned long)Time, (int)iBattRaw);
-    
     nextTime = millis() + WINDOW_CAPTURE;
   }  
   // FIN UPDATE DISPLAY

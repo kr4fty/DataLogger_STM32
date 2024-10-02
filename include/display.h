@@ -10,9 +10,9 @@ Adafruit_PCD8544 lcd = Adafruit_PCD8544(LCD_SCLK_PIN, LCD_DIN_PIN, LCD_DC_PIN, L
 #define DISPLAY_UPDATE_WINDOW 200 // Actualizo cada 200 mili segundos
 
 bool updateDisplay = false;
-char buff[20];
+char buff[20], aux[10];
 
-void floatTostr(float numero, uint8_t size_buff, uint8_t decimales)
+void floatTostr(float numero, uint8_t size_buff, uint8_t decimales, char *buf= buff)
 {
     if((decimales+1)<=size_buff){
         int parte_entera, parte_decimal;
@@ -21,16 +21,16 @@ void floatTostr(float numero, uint8_t size_buff, uint8_t decimales)
         switch (size_buff-decimales-1) // digitos de la parte entera
         {
         case 0:
-            sprintf(buff,".");
+            sprintf(buf,".");
             break;
         case 1:
-            sprintf(buff,"%1d.",parte_entera); // Obtenemos parte Entera
+            sprintf(buf,"%1d.",parte_entera); // Obtenemos parte Entera
             break;
         case 2:
-            sprintf(buff,"%2d.",parte_entera); // Obtenemos parte Entera
+            sprintf(buf,"%2d.",parte_entera); // Obtenemos parte Entera
             break;
         case 3:
-            sprintf(buff,"%3d.",parte_entera); // Obtenemos parte Entera
+            sprintf(buf,"%3d.",parte_entera); // Obtenemos parte Entera
             break;
         default:
             break;
@@ -40,26 +40,26 @@ void floatTostr(float numero, uint8_t size_buff, uint8_t decimales)
         switch (decimales)
         {
         case 1:
-            sprintf(buff, "%s%01d", buff, parte_decimal);
+            sprintf(buf, "%s%01d", buf, parte_decimal);
             break;
         case 2:
-            sprintf(buff, "%s%02d", buff, parte_decimal);
+            sprintf(buf, "%s%02d", buf, parte_decimal);
             break;
         case 3:
-            sprintf(buff, "%s%03d", buff, parte_decimal);
+            sprintf(buf, "%s%03d", buf, parte_decimal);
             break;
         case 4:
-            sprintf(buff, "%s%04d", buff, parte_decimal);
+            sprintf(buf, "%s%04d", buf, parte_decimal);
             break;
         case 5:
-            sprintf(buff, "%s%05d", buff, parte_decimal);
+            sprintf(buf, "%s%05d", buf, parte_decimal);
             break;
         default:
             break;
         }
     }
     else
-        sprintf(buff,"NULL");
+        sprintf(buf,"NULL");
 }
 
 void lcd_init()
@@ -114,9 +114,15 @@ void lcd_printMosfetSelection(uint8_t sel)
     lcd.setTextSize(1);
 }
 
-void lcd_printMosfet(uint8_t sel, float value)
+void lcd_printMosfet(uint8_t sel, double vRaw, double iRaw)
 {
-    sprintf(buff, "Mosfet %d  %4d",sel,(int)value);
+    //sprintf(buff, "M%d %3.1f %3.1f",sel,vRaw, iRaw);
+    sprintf(buff, "M%d ", sel);
+    floatTostr(vRaw, 5, 1, aux);
+    strcat(buff, aux);
+    strcat(buff, " ");
+    floatTostr(iRaw, 5, 1, aux);
+    strcat(buff, aux);
 
     lcd.setTextSize(1);
     lcd.setCursor(0*6,0*8);
