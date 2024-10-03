@@ -103,7 +103,7 @@ Tener en cuenta que el tiempo se registra en **milisegundos**, por lo que antes 
   - Corriente (en Amperes) en función del ciclo de trabajo (Duty).
   - Valores de ADC en función del ciclo de trabajo (Duty).
 
-  ![LibreOffice Calc](https://i.ibb.co/Bnyfhtn/Captura-de-pantalla-20240920-090458.png)
+  ![LibreOffice Calc](https://i.ibb.co/DGBc2YT/Captura-de-pantalla-20241003-103530-resized.png)
 
 - **Exportación de Resultados:**
   
@@ -112,20 +112,25 @@ Tener en cuenta que el tiempo se registra en **milisegundos**, por lo que antes 
 **constantes.h**
 ```constantes.h
 ...
-
-  // MOSFET
-#define ADC_VGS_THRESHOLE  2650 // Tension minima de conduccion para este IRFZ44
+// MOSFET
+#define ADC_VGS_THRESHOLE  2400 // Tension minima de conduccion para este IRFZ44
 
 // PID
 //      https://pidtuner.com/
-//          Proportional Gain= 15
-//          Integral Time= 0,25
-//          Derivative Time= 0.05
-//          Integral Gain= 60
-//          Derivative Gain= 0.75
-#define KP               15
-#define KI               60
-#define KD             0.75
+//          Proportional Gain= 35
+//          Integral Time= 1
+//          Derivative Time= 0.1
+//          Integral Gain= 35
+//          Derivative Gain= 3.5
+// Constantes en modo Conservativo
+#define KP_CNSTIVE     15.0
+#define KI_CNSTIVE     15.0
+#define KD_CNSTIVE      1.5
+// Constantes en modo Agresivo
+#define KP_AGG         35.0
+#define KI_AGG         35.0
+#define KD_AGG          3.5
+
 #define PID_WINDOW_SIZE  10 // 10 mili segundos
 
 #endif
@@ -137,13 +142,13 @@ Tener en cuenta que el tiempo se registra en **milisegundos**, por lo que antes 
 /*********************** ADC en funcion del DutyCycle ************************/
 
 // Coeficientes de la regresión polinómica, para MOSFET1
-#define AM1  0.000454764917333275
-#define BM1  -2.86027477489123
-#define CM1  5032.90528137101
+#define AM1 0.000203984593837537
+#define BM1 -1.08140665266108
+#define CM1 1987.46580882355
 // MOSFET2
-#define AM2  0.000228750264512528
-#define BM2  -1.24017153035163
-#define CM2  2222.8681053449
+#define AM2 0.000281527347781217
+#define BM2 -1.54884932920536
+#define CM2 2681.0007739938
 
 // Función para convertir Duty Cycle a ADC
 double dutycycleToADC(int dutyCycle, uint8_t unity=MOSFET1)
